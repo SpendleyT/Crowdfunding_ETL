@@ -1,0 +1,82 @@
+﻿-- If exists, drop existing tables before creating
+DROP TABLE campaigns CASCADE;
+DROP TABLE category CASCADE;
+DROP TABLE subcategory CASCADE;
+DROP TABLE contacts CASCADE;
+
+
+-- Create database schema
+CREATE TABLE "category" (
+    "category_id" varchar   NOT NULL,
+    "category" varchar   NOT NULL,
+    CONSTRAINT "pk_category" PRIMARY KEY (
+        "category_id"
+     )
+);
+
+CREATE TABLE "subcategory" (
+    "subcategory_id" varchar   NOT NULL,
+    "subcategory" varchar   NOT NULL,
+    CONSTRAINT "pk_subcategory" PRIMARY KEY (
+        "subcategory_id"
+     )
+);
+
+CREATE TABLE "contacts" (
+    "contact_id" int   NOT NULL,
+    "first_name" varchar   NOT NULL,
+    "last_name" varchar   NOT NULL,
+    "email" varchar   NOT NULL,
+    CONSTRAINT "pk_contacts" PRIMARY KEY (
+        "contact_id"
+     )
+);
+
+CREATE TABLE "campaigns" (
+    "cf_id" integer   NOT NULL,
+    "contact_id" int   NOT NULL,
+    "category_id" varchar   NOT NULL,
+    "subcategory_id" varchar   NOT NULL,
+    "company_name" varchar   NOT NULL,
+    "description" varchar   NOT NULL,
+    "goal" integer  DEFAULT 0.00 NOT NULL,
+    "pledged" integer  DEFAULT 0.00 NOT NULL,
+    "outcome" varchar   NOT NULL,
+    "backers_count" int  DEFAULT 0 NOT NULL,
+    "country" varchar   NOT NULL,
+    "currency" varchar(3)  NOT NULL,
+    "launch_date" timestamp without time zone NOT NULL,
+    "end_date" timestamp without time zone NOT NULL,
+    CONSTRAINT "pk_campaigns" PRIMARY KEY (
+        "cf_id"
+     )
+);
+
+ALTER TABLE "campaigns" ADD CONSTRAINT "fk_campaigns_contact_id" FOREIGN KEY("contact_id")
+REFERENCES "contacts" ("contact_id");
+
+ALTER TABLE "campaigns" ADD CONSTRAINT "fk_campaigns_category_id" FOREIGN KEY("category_id")
+REFERENCES "category" ("category_id");
+
+ALTER TABLE "campaigns" ADD CONSTRAINT "fk_campaigns_subcategory_id" FOREIGN KEY("subcategory_id")
+REFERENCES "subcategory" ("subcategory_id");
+
+-- Query each table
+SELECT * FROM campaigns ORDER BY cf_id;
+
+SELECT * FROM contacts ORDER BY contact_id;
+
+SELECT * FROM category ORDER BY category_id;
+
+SELECT * FROM subcategory ORDER BY subcategory_id;
+
+
+-- Query to confirm joins
+SELECT campaigns.company_name, campaigns.description, contacts.email, 
+	category.category, subcategory.subcategory 
+FROM campaigns 
+LEFT JOIN contacts on campaigns.contact_id = contacts.contact_id
+LEFT JOIN category on campaigns.category_id = category.category_id
+LEFT JOIN subcategory on campaigns.subcategory_id = subcategory.subcategory_id
+ORDER BY company_name
+LIMIT 10;
