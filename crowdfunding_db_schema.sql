@@ -1,8 +1,8 @@
 ﻿-- If exists, drop existing tables before creating
-DROP TABLE campaigns CASCADE;
-DROP TABLE category CASCADE;
-DROP TABLE subcategory CASCADE;
-DROP TABLE contacts CASCADE;
+DROP TABLE IF EXISTS campaigns CASCADE;
+DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS subcategory CASCADE;
+DROP TABLE IF EXISTS contacts CASCADE;
 
 
 -- Create database schema
@@ -60,23 +60,3 @@ REFERENCES "category" ("category_id");
 
 ALTER TABLE "campaigns" ADD CONSTRAINT "fk_campaigns_subcategory_id" FOREIGN KEY("subcategory_id")
 REFERENCES "subcategory" ("subcategory_id");
-
--- Query each table
-SELECT * FROM campaigns ORDER BY cf_id;
-
-SELECT * FROM contacts ORDER BY contact_id;
-
-SELECT * FROM category ORDER BY category_id;
-
-SELECT * FROM subcategory ORDER BY subcategory_id;
-
-
--- Query to confirm joins
-SELECT campaigns.company_name, campaigns.description, contacts.email, 
-	category.category, subcategory.subcategory 
-FROM campaigns 
-LEFT JOIN contacts on campaigns.contact_id = contacts.contact_id
-LEFT JOIN category on campaigns.category_id = category.category_id
-LEFT JOIN subcategory on campaigns.subcategory_id = subcategory.subcategory_id
-ORDER BY company_name
-LIMIT 10;
